@@ -1,25 +1,21 @@
-const contacts = require('../models/contacts');
+const {
+  Contact,
+  contactAddSchema,
+  contactUpdateFavoriteSchema,
+} = require('../models/contact');
 
 const { HttpError } = require('../helpers');
 
 const { ctrlWrapper } = require('../decorators');
 
-const Joi = require('joi');
-
-const contactAddSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().required(),
-  phone: Joi.string().required(),
-});
-
 const getAllContacts = async (req, res) => {
-  const allContacts = await contacts.listContacts();
+  const allContacts = await Contact.find({}, '-createdAt -updatedAt');
   res.json(allContacts);
 };
 
 const getContactsById = async (req, res) => {
   const { contactId } = req.params;
-  const contactByID = await contacts.getContactById(contactId);
+  const contactByID = await Contact.findById(contactId);
   if (!contactByID) {
     throw HttpError(404);
   }
@@ -31,13 +27,13 @@ const addContact = async (req, res) => {
   if (error) {
     throw HttpError(400, `missing required name field ${error.message}`);
   }
-  const addContact = await contacts.addContact(req.body);
+  const addContact = await Contact.create(req.body);
   res.status(201).json(addContact);
 };
 
 const deleteContactById = async (req, res) => {
   const { contactId } = req.params;
-  const contactByID = await contacts.removeContact(contactId);
+  const contactByID = await Contact.findByIdAndRemove({ _id: contactId });
   if (!contactByID) {
     throw HttpError(404);
   }
@@ -50,7 +46,28 @@ const updateContactById = async (req, res) => {
     throw HttpError(400, 'missing fields');
   }
   const { contactId } = req.params;
-  const contactByID = await contacts.updateContact(contactId, req.body);
+  const contactByID = await Contact.findByIdAndUpdate(
+    { _id: contactId },
+    req.body,
+    { new: true }
+  );
+  if (!contactByID) {
+    throw HttpError(404);
+  }
+  res.json(contactByID);
+};
+
+const updateStatusContact = async (req, res) => {
+  const { error } = contactUpdateFavoriteSchema.validate(req.body);
+  if (error) {
+    throw HttpError(400, 'missing field favorite');
+  }
+  const { contactId } = req.params;
+  const contactByID = await Contact.findByIdAndUpdate(
+    { _id: contactId },
+    req.body,
+    { new: true }
+  );
   if (!contactByID) {
     throw HttpError(404);
   }
@@ -63,4 +80,5 @@ module.exports = {
   addContact: ctrlWrapper(addContact),
   deleteContactById: ctrlWrapper(deleteContactById),
   updateContactById: ctrlWrapper(updateContactById),
+  updateStatusContact: ctrlWrapper(updateStatusContact),
 };
