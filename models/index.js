@@ -3,5 +3,11 @@ const {
   contactAddSchema,
   contactUpdateFavoriteSchema,
 } = require('./contact');
+const User = require('./user');
 
-module.exports = { Contact, contactAddSchema, contactUpdateFavoriteSchema };
+module.exports = {
+  Contact,
+  User,
+  contactAddSchema,
+  contactUpdateFavoriteSchema,
+};

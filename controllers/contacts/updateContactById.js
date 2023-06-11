@@ -1,12 +1,8 @@
-const { Contact, contactAddSchema } = require('../../models');
+const { Contact } = require('../../models');
 
 const { HttpError } = require('../../helpers');
 
 const updateContactById = async (req, res) => {
-  const { error } = contactAddSchema.validate(req.body);
-  if (error) {
-    throw HttpError(400, 'missing fields');
-  }
   const { contactId } = req.params;
   const contactByID = await Contact.findByIdAndUpdate(
     { _id: contactId },
