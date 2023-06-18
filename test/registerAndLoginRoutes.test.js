@@ -10,7 +10,7 @@ const { PORT, DB_HOST_TEST } = process.env;
 
 let server = null;
 
-// Creating  user and testing register rout
+// Create  user and testing register rout
 
 describe('test register route', () => {
   beforeAll(async () => {
@@ -74,7 +74,7 @@ describe('test register route', () => {
   });
 });
 
-// Testing login route and the and removing user data
+// Test login route and the and removing user data
 
 describe('test login route', () => {
   afterAll(async () => {
