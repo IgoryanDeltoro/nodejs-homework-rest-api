@@ -9,4 +9,8 @@ const subscriptionSchema = Joi.object({
   subscription: Joi.string().required(),
 });
 
-module.exports = { authSchema, subscriptionSchema };
+const verifySchema = Joi.object({
+  email: Joi.string().required(),
+});
+
+module.exports = { authSchema, subscriptionSchema, verifySchema };
