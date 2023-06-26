@@ -4,13 +4,21 @@ const router = express.Router();
 
 const { validateBody } = require('../../decorators');
 
-const { authSchema, subscriptionSchema } = require('../../schemas');
+const {
+  authSchema,
+  subscriptionSchema,
+  verifySchema,
+} = require('../../schemas');
 
 const userAuth = require('../../controllers/auth');
 
 const { authenticate, upload } = require('../../middlewares');
 
 router.post('/register', validateBody(authSchema), userAuth.userRegister);
+
+router.get('/verify/:verificationToken', userAuth.verifyEmail);
+
+router.post('/verify', validateBody(verifySchema), userAuth.resendVerify);
 
 router.post('/login', validateBody(authSchema), userAuth.userLogin);
 
