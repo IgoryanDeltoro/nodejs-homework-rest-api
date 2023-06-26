@@ -1,6 +1,6 @@
 FROM node
 
-WORKDIR /backand-app
+WORKDIR /app
 
 COPY . .
 
